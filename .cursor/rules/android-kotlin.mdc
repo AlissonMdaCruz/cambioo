@@ -1,0 +1,81 @@
+---
+description: Kotlin and Android conventions for Cambioo (MVVM, Compose, Hilt)
+alwaysApply: true
+---
+# Android Kotlin
+
+Generate code, corrections, and refactorings that follow modern Kotlin/Android practice and this project's stack. Source of truth for architecture: `docs/plano-de-contexto.md` §7. Also align with Android Architecture Recommendations and Kotlin Coding Conventions.
+
+## Kotlin
+
+- Use English for all code and documentation comments.
+- Prefer `val` and immutable data. Use `data class` for models.
+- Declare types on public APIs (parameters, return types, exposed properties). Allow local type inference.
+- Avoid `Any` when a concrete type or sealed hierarchy fits.
+- Follow JetBrains naming: PascalCase for types and `.kt` file names matching the primary class (`HomeViewModel.kt`); camelCase for functions and properties; `SCREAMING_SNAKE_CASE` for `const val`; packages lowercase without underscores.
+- Prefer composition over inheritance. Declare interfaces for contracts. Keep classes small and single-purpose.
+- Keep functions short and single-purpose. Name with a verb. Booleans: `isX`, `hasX`, `canX`. Prefer early returns over deep nesting.
+- Prefer few typed parameters; use a `data class` only when grouping is real, not as a default RO-RO pattern.
+- Prefer `val` over mutable state. Do not leave blank lines inside a function body.
+- Use exceptions for unexpected errors. Catch to recover from an expected case or to add context, otherwise let a global handler deal with it.
+
+## Android / Cambioo
+
+- Single module `:app`, single-activity (`MainActivity`).
+- UI: Jetpack Compose + Material 3 + Navigation Compose. Do not use XML layouts, Fragments, ViewBinding, or ConstraintLayout for new screens.
+- Architecture: MVVM with unidirectional data flow. The UI calls ViewModel methods; the ViewModel exposes immutable `StateFlow` UI state (e.g. `uiState`). Do not use MVI reducers/intents as the default pattern.
+- Collect state with `collectAsStateWithLifecycle`. Prefer `StateFlow` over LiveData for new Compose code.
+- Run async work in `viewModelScope` with Coroutines. Keep ViewModels free of `Activity`, `Context`, and `Resources`.
+- DI: Hilt (`@HiltViewModel`, constructor injection).
+- Package layout (feature packages under the app root):
+
+```text
+di/
+data/remote/
+data/local/
+data/
+domain/
+ui/home/
+ui/history/
+ui/components/
+ui/theme/
+```
+
+- Repository pattern: ViewModels talk to a repository contract in `data`; implementation uses Retrofit (remote) and Room (snapshot). `domain` stays pure JVM (no Android, Retrofit, or Room).
+- No use-case / mapper tree beyond what §7.4 already defines.
+- Screens: Home and History, plus shared loading / empty / error components. No Auth flow (login, register, splash auth).
+- Money/rates: parse API decimals as `String` then `BigDecimal`. Do not use `Double` for quotes or variation.
+
+```kotlin
+// Good: MVVM + StateFlow + lifecycle-aware collect
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val ratesRepository: RatesRepository,
+) : ViewModel() {
+    val uiState: StateFlow<HomeUiState> = ratesRepository.observeSnapshot()
+        .map { snapshot -> snapshot.toHomeUiState() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = HomeUiState.Loading,
+        )
+
+    fun refresh(): Unit {
+        viewModelScope.launch { ratesRepository.refreshWindow() }
+    }
+}
+
+@Composable
+fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    HomeScreen(uiState = uiState, onRefresh = viewModel::refresh)
+}
+
+// Bad: MVI boilerplate, XML/ViewBinding, or LiveData for new Compose screens
+```
+
+## Testing
+
+- Follow Arrange-Act-Assert. Name fixtures clearly: `inputX`, `fakeX` / `mockX`, `actualX`, `expectedX`.
+- JVM unit tests for domain rules and ViewModels (JUnit, MockK or fakes, Turbine, kotlinx-coroutines-test). Prefer fakes over mocks when practical.
+- Do not require Robolectric for domain/ViewModel tests. Do not use Flutter widget testing conventions.
