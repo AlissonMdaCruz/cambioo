@@ -4,7 +4,7 @@ alwaysApply: true
 ---
 # Android Kotlin
 
-Generate code, corrections, and refactorings that follow modern Kotlin/Android practice and this project's stack. Source of truth for architecture: `docs/plano-de-contexto.md` §7. Also align with Android Architecture Recommendations and Kotlin Coding Conventions.
+Generate code, corrections, and refactorings that follow modern Kotlin/Android practice and this project's stack. Source of truth for architecture: `docs/architecture.md`. Product behavior: `docs/prd/cambioo.md`. Also align with Android Architecture Recommendations and Kotlin Coding Conventions.
 
 ## Kotlin
 

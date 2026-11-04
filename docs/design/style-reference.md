@@ -1,3 +1,10 @@
+> **Inspiração visual apenas.** Não redefine o produto nem é checklist de componentes.
+> Em conflito, prevalecem [product-brief.md](../product-brief.md), [prd/cambioo.md](../prd/cambioo.md) e [architecture.md](../architecture.md).
+>
+> **Fora da v1 (não implementar):** Currency Exchange Card com sparkline, badge com setas ↑↓, Quick Conversion Input Bar, Segmented Timeframe Switcher, layouts tablet/desktop multi-coluna, flag icons.
+>
+> **Útil na v1:** dark contido, hierarquia no número, contraste alto, cor reforçando alta/queda/estável sem ser o único sinal, tipografia expressiva (sans + mono opcional).
+
 ---
 name: Parity Currency Interface
 colors:

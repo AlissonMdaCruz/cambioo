@@ -1,8 +1,16 @@
 # Plano de contexto — Câmbioo
 
+> **Supersedido em 2026-11-04.** Preservado só para histórico.
+>
+> Leia em vez disso:
+> - Visão: [../product-brief.md](../product-brief.md)
+> - Produto / specs: [../prd/cambioo.md](../prd/cambioo.md)
+> - Técnica: [../architecture.md](../architecture.md)
+> - Estilo: [../design/style-reference.md](../design/style-reference.md)
+
 Versão 1 deste plano · 3 de novembro de 2026
 
-Este documento é a referência de escopo da primeira versão. Decisões fechadas aqui permanecem fechadas durante a implementação. Uma mudança de moeda, de fonte, de escala decimal ou de estado de tela passa por uma atualização deste plano antes de virar código.
+Este documento foi a referência de escopo da primeira versão antes da reorganização da pasta `docs`.
 
 O produto é uma consulta de câmbio em reais para leitura rápida no celular: a cotação mais recente, a variação contra a observação anterior e o histórico publicado dentro de uma janela de 30 dias. O projeto também é a peça de portfólio que sustenta, num módulo só, Jetpack Compose, Hilt, Retrofit e Room, sobre MVVM, Coroutines, Flow e teste unitário.
 
