@@ -24,12 +24,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amdcruz.cambioo.R
+import com.amdcruz.cambioo.ui.common.AccessibilityAnnouncements
 import com.amdcruz.cambioo.ui.components.EmptyPanel
 import com.amdcruz.cambioo.ui.components.ErrorPanel
 import com.amdcruz.cambioo.ui.components.LoadingPanel
@@ -100,6 +106,7 @@ private fun HomeContent(
                     text = stringResource(R.string.home_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.semantics { heading() },
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
@@ -118,9 +125,9 @@ private fun HomeContent(
                     color = TextLow,
                     modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
                 )
-                state.notice?.let { notice ->
+                if (state.notice != null) {
                     Text(
-                        text = notice,
+                        text = stringResource(R.string.notice_stale_quotes),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 8.dp),
@@ -148,19 +155,23 @@ private fun QuoteRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val openHistoryLabel = stringResource(R.string.a11y_open_history)
+    val announcement = AccessibilityAnnouncements.quoteRow(
+        valueSpoken = quote.valueSpoken,
+        variationSpoken = quote.variationSpoken,
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .sizeIn(minHeight = 48.dp)
             .clickable(onClick = onClick)
             .padding(vertical = 14.dp)
-            .semantics {
-                contentDescription = buildString {
-                    append(quote.valueSpoken)
-                    quote.variationSpoken?.let { variation ->
-                        append(", ")
-                        append(variation)
-                    }
+            .clearAndSetSemantics {
+                contentDescription = announcement
+                role = Role.Button
+                onClick(label = openHistoryLabel) {
+                    onClick()
+                    true
                 }
             },
         horizontalArrangement = Arrangement.SpaceBetween,
