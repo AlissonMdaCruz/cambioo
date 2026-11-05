@@ -118,16 +118,19 @@ Abra o app: a home dispara a carga da janela; toque numa moeda para o histórico
 ./gradlew :app:testDebugUnitTest
 ```
 
-## Screenshots / demo
+## Screenshots
 
-> Espaço reservado para capturas da home, histórico e estados (erro / offline).
+<p align="center">
+  <img src="docs/images/home.png" alt="Home — cotações em reais" width="240" />
+  &nbsp;&nbsp;
+  <img src="docs/images/history.png" alt="Histórico — janela de 30 dias" width="240" />
+  &nbsp;&nbsp;
+  <img src="docs/images/offline-notice.png" alt="Home com aviso de cotação guardada" width="240" />
+</p>
 
-```text
-docs/images/
-  home.png
-  history.png
-  offline-notice.png
-```
+| Home | Histórico | Offline |
+| :---: | :---: | :---: |
+| Quatro moedas em BRL, variação e fonte BCE | Série publicada dos últimos 30 dias | Snapshot local com aviso quando a atualização falha |
 
 ## Documentação do produto
 
