@@ -3,6 +3,8 @@ package com.amdcruz.cambioo.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val CanvasBase = Color(0xFF0D0E11)
+val SurfaceElevation1 = Color(0xFF14161C)
+val SurfacePressed = Color(0xFF1B1E26)
 val SurfaceLow = Color(0xFF1B1B1F)
 val SurfaceContainer = Color(0xFF1F1F23)
 val SurfaceHigh = Color(0xFF292A2D)
@@ -20,3 +22,5 @@ val NeutralParity = Color(0xFF7E8695)
 val PrimaryLight = Color(0xFFF4F5F7)
 val OnPrimaryLight = Color(0xFF0D0E11)
 val ErrorSoft = Color(0xFFFFB4AB)
+val ErrorContainerDark = Color(0xFF93000A)
+val OnErrorContainerLight = Color(0xFFFFDAD6)
