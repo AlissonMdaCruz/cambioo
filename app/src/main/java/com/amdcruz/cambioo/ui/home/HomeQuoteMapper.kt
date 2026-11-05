@@ -4,11 +4,12 @@ import com.amdcruz.cambioo.data.RatesSnapshot
 import com.amdcruz.cambioo.domain.QuoteFormatter
 import com.amdcruz.cambioo.domain.QuoteSeries
 import com.amdcruz.cambioo.domain.QuotedObservation
+import com.amdcruz.cambioo.ui.common.RatesSessionState
 
 object HomeQuoteMapper {
     fun toContent(
         snapshot: RatesSnapshot,
-        notice: String?,
+        sessionState: RatesSessionState,
     ): HomeUiState.Content {
         val quoted = QuoteSeries.latestByCurrency(snapshot.observations)
         val quotes = quoted.map { item -> item.toQuoteUi() }
@@ -18,7 +19,8 @@ object HomeQuoteMapper {
             latestQuoteDateText = QuoteFormatter.formatObservationDate(latestDate),
             savedAtText = QuoteFormatter.formatSavedAt(snapshot.savedAt),
             sourceName = snapshot.sourceName,
-            notice = notice,
+            notice = sessionState.notice,
+            isRefreshing = sessionState.isRefreshing,
         )
     }
 

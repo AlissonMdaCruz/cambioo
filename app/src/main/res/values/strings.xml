@@ -10,6 +10,6 @@
     <string name="source_label">Fonte: %1$s</string>
     <string name="quote_date_label">Cotação de %1$s</string>
     <string name="saved_at_label">Guardada em %1$s</string>
-    <string name="history_placeholder">Histórico de %1$s (em breve)</string>
+    <string name="history_title">Histórico · %1$s</string>
     <string name="back">Voltar</string>
 </resources>

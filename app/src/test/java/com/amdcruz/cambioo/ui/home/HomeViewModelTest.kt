@@ -6,6 +6,8 @@ import com.amdcruz.cambioo.data.RefreshResult
 import com.amdcruz.cambioo.domain.Currency
 import com.amdcruz.cambioo.domain.RateObservation
 import com.amdcruz.cambioo.domain.RateSource
+import com.amdcruz.cambioo.ui.common.RatesSessionStore
+import com.amdcruz.cambioo.ui.common.RatesUiCopy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -27,11 +30,13 @@ import java.time.LocalDate
 class HomeViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var repository: FakeRatesRepository
+    private lateinit var sessionStore: RatesSessionStore
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         repository = FakeRatesRepository()
+        sessionStore = RatesSessionStore()
     }
 
     @After
@@ -61,7 +66,7 @@ class HomeViewModelTest {
             ),
         )
         repository.refreshHandler = { RefreshResult.Success(snapshot) }
-        val viewModel = HomeViewModel(repository)
+        val viewModel = HomeViewModel(repository, sessionStore)
         advanceUntilIdle()
 
         viewModel.uiState.test {
@@ -70,6 +75,7 @@ class HomeViewModelTest {
             val content = state as HomeUiState.Content
             assertEquals(listOf("USD", "EUR"), content.quotes.map { it.currencyCode })
             assertNull(content.notice)
+            assertFalse(content.isRefreshing)
             assertTrue(content.quotes.first().variationVisual.isNotBlank())
             cancelAndIgnoreRemainingEvents()
         }
@@ -80,7 +86,7 @@ class HomeViewModelTest {
         repository.refreshHandler = {
             RefreshResult.Failure(RuntimeException("offline"))
         }
-        val viewModel = HomeViewModel(repository)
+        val viewModel = HomeViewModel(repository, sessionStore)
         advanceUntilIdle()
 
         viewModel.uiState.test {
@@ -104,14 +110,14 @@ class HomeViewModelTest {
         repository.refreshHandler = {
             RefreshResult.Failure(RuntimeException("offline"))
         }
-        val viewModel = HomeViewModel(repository)
+        val viewModel = HomeViewModel(repository, sessionStore)
         advanceUntilIdle()
 
         viewModel.uiState.test {
             val state = expectMostRecentItem()
             assertTrue(state is HomeUiState.Content)
             val content = state as HomeUiState.Content
-            assertEquals(HomeCopy.NOTICE_STALE, content.notice)
+            assertEquals(RatesUiCopy.NOTICE_STALE, content.notice)
             assertEquals("USD", content.quotes.single().currencyCode)
             cancelAndIgnoreRemainingEvents()
         }
@@ -120,7 +126,7 @@ class HomeViewModelTest {
     @Test
     fun refresh_emptyWithoutSnapshot_emitsEmpty() = runTest {
         repository.refreshHandler = { RefreshResult.Empty }
-        val viewModel = HomeViewModel(repository)
+        val viewModel = HomeViewModel(repository, sessionStore)
         advanceUntilIdle()
 
         viewModel.uiState.test {
@@ -144,13 +150,14 @@ class HomeViewModelTest {
         repository.refreshHandler = {
             RefreshResult.Success(snapshot)
         }
-        val viewModel = HomeViewModel(repository)
+        val viewModel = HomeViewModel(repository, sessionStore)
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value is HomeUiState.Content)
         viewModel.refresh()
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value is HomeUiState.Content)
         assertNull((viewModel.uiState.value as HomeUiState.Content).notice)
+        assertFalse((viewModel.uiState.value as HomeUiState.Content).isRefreshing)
     }
 
     private fun sampleSnapshot(
