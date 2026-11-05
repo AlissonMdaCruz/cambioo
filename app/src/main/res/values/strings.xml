@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Cambioo</string>
+    <string name="app_name">Câmbioo</string>
+    <string name="home_title">Câmbioo</string>
+    <string name="loading_quotes">Carregando cotações</string>
+    <string name="empty_quotes">Não há cotação neste período.</string>
+    <string name="error_quotes">Não foi possível atualizar a cotação. Verifique a conexão e tente de novo.</string>
+    <string name="notice_stale_quotes">Não foi possível atualizar. Mostrando a cotação guardada.</string>
+    <string name="retry">Tentar de novo</string>
+    <string name="refresh_quotes">Atualizar cotações</string>
+    <string name="source_label">Fonte: %1$s</string>
+    <string name="quote_date_label">Cotação de %1$s</string>
+    <string name="saved_at_label">Guardada em %1$s</string>
+    <string name="history_title">Histórico · %1$s</string>
+    <string name="back">Voltar</string>
+    <string name="a11y_open_history">Abrir histórico</string>
+    <string name="a11y_home_list">Lista de cotações</string>
+    <string name="a11y_history_list">Histórico de cotações</string>
 </resources>

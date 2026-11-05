@@ -1,58 +1,42 @@
 package com.amdcruz.cambioo.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val CambiooDarkColorScheme = darkColorScheme(
+    primary = PrimaryLight,
+    onPrimary = OnPrimaryLight,
+    secondary = PositiveParity,
+    onSecondary = OnPrimaryLight,
+    tertiary = NegativeParity,
+    background = CanvasBase,
+    onBackground = TextHigh,
+    surface = CanvasBase,
+    onSurface = TextHigh,
+    surfaceVariant = SurfaceContainer,
+    onSurfaceVariant = TextMedium,
+    surfaceContainerLowest = CanvasBase,
+    surfaceContainerLow = SurfaceElevation1,
+    surfaceContainer = SurfaceElevation1,
+    surfaceContainerHigh = SurfacePressed,
+    surfaceContainerHighest = SurfaceHigh,
+    outline = OutlineMuted,
+    outlineVariant = OutlineHairline,
+    error = ErrorSoft,
+    onError = OnPrimaryLight,
+    errorContainer = ErrorContainerDark,
+    onErrorContainer = OnErrorContainerLight,
 )
 
 @Composable
 fun CambiooTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = CambiooDarkColorScheme,
         typography = Typography,
-        content = content
+        shapes = CambiooShapes,
+        content = content,
     )
 }
