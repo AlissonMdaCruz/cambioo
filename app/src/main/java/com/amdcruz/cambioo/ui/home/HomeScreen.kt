@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,9 +33,7 @@ import com.amdcruz.cambioo.R
 import com.amdcruz.cambioo.ui.components.EmptyPanel
 import com.amdcruz.cambioo.ui.components.ErrorPanel
 import com.amdcruz.cambioo.ui.components.LoadingPanel
-import com.amdcruz.cambioo.ui.theme.NegativeParity
-import com.amdcruz.cambioo.ui.theme.NeutralParity
-import com.amdcruz.cambioo.ui.theme.PositiveParity
+import com.amdcruz.cambioo.ui.components.variationColor
 import com.amdcruz.cambioo.ui.theme.TextLow
 import com.amdcruz.cambioo.ui.theme.TextMedium
 
@@ -45,7 +45,7 @@ fun HomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         uiState = uiState,
-        onRetry = viewModel::refresh,
+        onRefresh = viewModel::refresh,
         onQuoteClick = onQuoteClick,
     )
 }
@@ -53,7 +53,7 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     onQuoteClick: (currencyCode: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -61,15 +61,16 @@ fun HomeScreen(
         when (val state = uiState) {
             HomeUiState.Loading -> LoadingPanel(modifier = Modifier.padding(innerPadding))
             HomeUiState.Empty -> EmptyPanel(
-                onRetry = onRetry,
+                onRetry = onRefresh,
                 modifier = Modifier.padding(innerPadding),
             )
             HomeUiState.Error -> ErrorPanel(
-                onRetry = onRetry,
+                onRetry = onRefresh,
                 modifier = Modifier.padding(innerPadding),
             )
             is HomeUiState.Content -> HomeContent(
                 state = state,
+                onRefresh = onRefresh,
                 onQuoteClick = onQuoteClick,
                 modifier = Modifier.padding(innerPadding),
             )
@@ -77,59 +78,66 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeContent(
     state: HomeUiState.Content,
+    onRefresh: () -> Unit,
     onQuoteClick: (currencyCode: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRefresh,
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        item {
-            Text(
-                text = stringResource(R.string.home_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.quote_date_label, state.latestQuoteDateText),
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextMedium,
-            )
-            Text(
-                text = stringResource(R.string.saved_at_label, state.savedAtText),
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextMedium,
-            )
-            Text(
-                text = stringResource(R.string.source_label, state.sourceName),
-                style = MaterialTheme.typography.labelSmall,
-                color = TextLow,
-                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
-            )
-            state.notice?.let { notice ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+        ) {
+            item {
                 Text(
-                    text = notice,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = 8.dp),
+                    text = stringResource(R.string.home_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.quote_date_label, state.latestQuoteDateText),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMedium,
+                )
+                Text(
+                    text = stringResource(R.string.saved_at_label, state.savedAtText),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMedium,
+                )
+                Text(
+                    text = stringResource(R.string.source_label, state.sourceName),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextLow,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                )
+                state.notice?.let { notice ->
+                    Text(
+                        text = notice,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    )
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        }
-        items(
-            items = state.quotes,
-            key = { quote -> quote.currencyCode },
-        ) { quote ->
-            QuoteRow(
-                quote = quote,
-                onClick = { onQuoteClick(quote.currencyCode) },
-            )
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            items(
+                items = state.quotes,
+                key = { quote -> quote.currencyCode },
+            ) { quote ->
+                QuoteRow(
+                    quote = quote,
+                    onClick = { onQuoteClick(quote.currencyCode) },
+                )
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
         }
     }
 }
@@ -189,11 +197,3 @@ private fun QuoteRow(
         }
     }
 }
-
-@Composable
-private fun variationColor(direction: VariationDirection) =
-    when (direction) {
-        VariationDirection.Up -> PositiveParity
-        VariationDirection.Down -> NegativeParity
-        VariationDirection.Flat, VariationDirection.None -> NeutralParity
-    }

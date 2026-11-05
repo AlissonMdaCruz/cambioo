@@ -30,16 +30,8 @@ sealed interface HomeUiState {
         val savedAtText: String,
         val sourceName: String,
         val notice: String?,
+        val isRefreshing: Boolean,
     ) : HomeUiState
-}
-
-object HomeCopy {
-    const val ERROR_MESSAGE: String =
-        "Não foi possível atualizar a cotação. Verifique a conexão e tente de novo."
-    const val NOTICE_STALE: String =
-        "Não foi possível atualizar. Mostrando a cotação guardada."
-    const val EMPTY_MESSAGE: String = "Não há cotação neste período."
-    const val LOADING_MESSAGE: String = "Carregando cotações"
 }
 
 fun variationDirectionOf(variationPercent: BigDecimal?): VariationDirection {
