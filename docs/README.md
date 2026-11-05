@@ -17,3 +17,7 @@ Ordem de leitura recomendada:
 | `design/style-reference.md` | Cores, tipografia, hierarquia visual | Requisitos de produto; componentes fora da v1 |
 
 Histórico: [archive/plano-de-contexto.md](archive/plano-de-contexto.md) (supersedido).
+
+## Verificação da v1
+
+Roteiro manual de aceite (7 passos): Spec 09 em [prd/cambioo.md](prd/cambioo.md).

@@ -12,4 +12,7 @@
     <string name="saved_at_label">Guardada em %1$s</string>
     <string name="history_title">Histórico · %1$s</string>
     <string name="back">Voltar</string>
+    <string name="a11y_open_history">Abrir histórico</string>
+    <string name="a11y_home_list">Lista de cotações</string>
+    <string name="a11y_history_list">Histórico de cotações</string>
 </resources>

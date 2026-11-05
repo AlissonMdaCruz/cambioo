@@ -23,12 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amdcruz.cambioo.R
+import com.amdcruz.cambioo.ui.common.AccessibilityAnnouncements
 import com.amdcruz.cambioo.ui.components.EmptyPanel
 import com.amdcruz.cambioo.ui.components.ErrorPanel
 import com.amdcruz.cambioo.ui.components.LoadingPanel
@@ -94,6 +97,7 @@ private fun HistoryContent(
                     text = stringResource(R.string.history_title, state.displayName),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.semantics { heading() },
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -112,9 +116,9 @@ private fun HistoryContent(
                     color = TextLow,
                     modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
                 )
-                state.notice?.let { notice ->
+                if (state.notice != null) {
                     Text(
-                        text = notice,
+                        text = stringResource(R.string.notice_stale_quotes),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 8.dp),
@@ -138,21 +142,18 @@ private fun HistoryRow(
     entry: HistoryEntryUi,
     modifier: Modifier = Modifier,
 ) {
+    val announcement = AccessibilityAnnouncements.historyRow(
+        observationDateSpoken = entry.observationDateSpoken,
+        valueSpoken = entry.valueSpoken,
+        variationSpoken = entry.variationSpoken,
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .sizeIn(minHeight = 48.dp)
             .padding(vertical = 14.dp)
-            .semantics {
-                contentDescription = buildString {
-                    append(entry.observationDateSpoken)
-                    append(", ")
-                    append(entry.valueSpoken)
-                    entry.variationSpoken?.let { variation ->
-                        append(", ")
-                        append(variation)
-                    }
-                }
+            .clearAndSetSemantics {
+                contentDescription = announcement
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
