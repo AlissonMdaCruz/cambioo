@@ -1,6 +1,5 @@
 package com.amdcruz.cambioo.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -17,25 +16,27 @@ private val CambiooDarkColorScheme = darkColorScheme(
     onSurface = TextHigh,
     surfaceVariant = SurfaceContainer,
     onSurfaceVariant = TextMedium,
+    surfaceContainerLowest = CanvasBase,
+    surfaceContainerLow = SurfaceElevation1,
+    surfaceContainer = SurfaceElevation1,
+    surfaceContainerHigh = SurfacePressed,
+    surfaceContainerHighest = SurfaceHigh,
     outline = OutlineMuted,
     outlineVariant = OutlineHairline,
     error = ErrorSoft,
     onError = OnPrimaryLight,
+    errorContainer = ErrorContainerDark,
+    onErrorContainer = OnErrorContainerLight,
 )
 
 @Composable
 fun CambiooTheme(
-    darkTheme: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme || isSystemInDarkTheme()) {
-        CambiooDarkColorScheme
-    } else {
-        CambiooDarkColorScheme
-    }
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = CambiooDarkColorScheme,
         typography = Typography,
+        shapes = CambiooShapes,
         content = content,
     )
 }

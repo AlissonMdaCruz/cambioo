@@ -42,7 +42,9 @@ fun CambiooNavHost(
                 navArgument(HistoryViewModel.CURRENCY_CODE_KEY) { type = NavType.StringType },
             ),
         ) {
-            HistoryRoute()
+            HistoryRoute(
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }
