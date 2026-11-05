@@ -33,8 +33,6 @@ Para quem avalia o repositório como peça de portfólio, o valor está na forma
 
 ## Destaques de engenharia
 
-O que um recrutador técnico costuma procurar — e onde aparece neste repo:
-
 - **Arquitetura legível:** MVVM com `StateFlow`, UI Compose coletando com `collectAsStateWithLifecycle`, repositório como fronteira de dados.
 - **Domínio puro:** inversão de taxa, janela de datas e variação em `BigDecimal` (`HALF_UP`, escala 2) — **sem `Double`** na cotação.
 - **Uma chamada por atualização:** série ECB/Frankfurter v2 para as quatro moedas no intervalo; sem “latest” extra.
@@ -122,8 +120,7 @@ Abra o app: a home dispara a carga da janela; toque numa moeda para o histórico
 
 ## Screenshots / demo
 
-> Espaço reservado para capturas da home, histórico e estados (erro / offline).  
-> Sugestão: adicione PNGs em `docs/images/` e referencie aqui — recrutadores valorizam ver a UI sem abrir o Android Studio.
+> Espaço reservado para capturas da home, histórico e estados (erro / offline).
 
 ```text
 docs/images/
